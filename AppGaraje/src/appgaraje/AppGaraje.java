@@ -50,8 +50,8 @@ abstract class Trabajo {
 
     public Trabajo(int plazo) {
         this.plazo = plazo;
-        this.identificador = this.proximoIdentificador;
-        this.proximoIdentificador++;
+        this.identificador = proximoIdentificador;
+        proximoIdentificador++;
         /*if(this.identificador > 0)
         this.identificador --; // this.identificador -= 1;*/
         
@@ -97,6 +97,12 @@ abstract class Trabajo {
     public float calcularCostoFijo(){
         return this.horas * 30;
     }
+
+    public int getPlazo() {
+        return plazo;
+    }
+    
+    
     
     public abstract float calcularCostoTotal();
 
