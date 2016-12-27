@@ -91,7 +91,10 @@ abstract class Trabajo {
     }
     
     public void aumentarHoras(float aumento){
-        this.horas += aumento;
+        if(!this.finalizado)
+            this.horas += aumento;
+        else
+            System.out.println("No se pudo aumentar las horas porque el trabajo ya está finalizado");
     }
     
     public float calcularCostoFijo(){
@@ -137,7 +140,10 @@ abstract class Reparacion extends Trabajo {
     }
     
     public void aumentarCostoMateriales(float aumento){
-        this.costoMateriales += aumento;
+         if(!this.finalizado)
+            this.costoMateriales += aumento;
+         else
+            System.out.println("No se pudo aumentar el costo de materiar porque el trabajo ya está finalizado");
     }
     
     
