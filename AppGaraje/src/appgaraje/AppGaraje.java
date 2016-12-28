@@ -5,6 +5,7 @@
  */
 package appgaraje;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,6 +20,22 @@ public class AppGaraje {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Garaje g = new Garaje();
+        Trabajo t = new Mecanica("Arreglo mecanico");
+        g.registrarTrabajo(t);
+        ChapaPintura t1 = new ChapaPintura("Arreglo pintura");
+        g.registrarTrabajo(t1);
+        
+        System.out.println(g.mostrarTodosLosTrabajo());
+        System.out.println(g.mostrarTrabajo(1));
+        
+        g.getTodosLosTrabajos().get(1).aumentarHoras(11.5f);
+        ((ChapaPintura)g.getTodosLosTrabajos().get(1)).aumentarCostoMateriales(3.5f);
+        System.out.println(g.getTodosLosTrabajos().get(1).calcularCostoTotal());
+        
+        g.getTodosLosTrabajos().get(1).finalizarTrabajo();
+        g.getTodosLosTrabajos().get(1).aumentarHoras(11.5f);
+        System.out.println(g.getTodosLosTrabajos().get(1).getHoras());
     }
 
 }
@@ -27,13 +44,41 @@ public class AppGaraje {
  Clase Garaje
  */
 class Garaje {
-    public List<Trabajo> todosLosTrabajos;
-    //public static int cantidadDeTrabajos;
+    private List<Trabajo> todosLosTrabajos;
 
-    public List<Trabajo> getTodosLosTrabajos() {
+    public Garaje() {
+        this.todosLosTrabajos = new ArrayList<>();
+    }
+    
+
+   public List<Trabajo> getTodosLosTrabajos() {
         return todosLosTrabajos;
     }
-
+    
+    public void registrarTrabajo(Trabajo trabajo){
+        todosLosTrabajos.add(trabajo);
+    }
+    
+    public String mostrarTrabajo(int identificador){
+        String resultado="";
+        for(int i=0; i< todosLosTrabajos.size();i++){
+            if(todosLosTrabajos.get(i).getIdentificador()==identificador)
+                resultado=todosLosTrabajos.get(i).toString();
+            else
+                resultado="No existe trabajo con este identificador";
+        }  
+        return resultado;
+    }
+    
+    public String mostrarTodosLosTrabajo(){
+        String resultado= "Los trabajos registrados son: ";
+        for(int i=0; i< todosLosTrabajos.size();i++){
+            //System.out.println(todosLosTrabajos.get(i).toString());
+            resultado = resultado + todosLosTrabajos.get(i).toString() + "\n";           
+        }
+        return resultado;
+    }
+    
 }
 
 /**
@@ -42,14 +87,15 @@ class Garaje {
 abstract class Trabajo {
 
     protected int identificador;
-    protected float horas;
     protected String descripcion;
+    protected float horas;
     protected boolean finalizado;
     protected final int plazo;
     private static int proximoIdentificador;
 
-    public Trabajo(int plazo) {
+    public Trabajo(int plazo, String descrip) {
         this.plazo = plazo;
+        this.descripcion = descrip;
         this.identificador = proximoIdentificador;
         proximoIdentificador++;
         /*if(this.identificador > 0)
@@ -105,9 +151,18 @@ abstract class Trabajo {
         return plazo;
     }
     
-    
+    public void finalizarTrabajo(){
+        this.finalizado = true;
+    }
     
     public abstract float calcularCostoTotal();
+
+    /*@Override
+    public String toString() {
+        return "Trabajo{" + "identificador=" + identificador + ", descripcion=" + descripcion + ", horas=" + horas + ", finalizado=" + finalizado + '}';
+    }*/
+    
+    
 
 }
 
@@ -116,8 +171,8 @@ abstract class Trabajo {
  */
 class Revision extends Trabajo {
         
-    public Revision() {
-        super(7);
+    public Revision(String descrip) {
+        super(7,descrip);
     }
 
     @Override
@@ -125,7 +180,10 @@ class Revision extends Trabajo {
         return this.calcularCostoFijo() + 20;
     }   
     
-    
+    @Override
+    public String toString() {
+        return "Trabajo{" + "identificador=" + identificador + ", tipo= Revisión" + ", descripcion=" + descripcion + ", horas=" + horas + ", finalizado=" + finalizado + '}';
+    }
 }
 
 /**
@@ -135,8 +193,8 @@ abstract class Reparacion extends Trabajo {
 
     protected float costoMateriales;
     
-    public Reparacion(int plazo) {
-        super(plazo);
+    public Reparacion(int plazo,String descrip) {
+        super(plazo,descrip);
     }
     
     public void aumentarCostoMateriales(float aumento){
@@ -161,8 +219,8 @@ abstract class Reparacion extends Trabajo {
  */
 class Mecanica extends Reparacion {
 
-    public Mecanica() {
-        super(14);
+    public Mecanica(String descrip) {
+        super(14,descrip);
     }
 
     @Override
@@ -170,7 +228,10 @@ class Mecanica extends Reparacion {
         return this.costoMateriales * 1.1f;
     }
 
-    
+    @Override
+    public String toString() {
+        return "Trabajo{" + "identificador=" + identificador + ", tipo= Reparación Mecánica" + ", descripcion=" + descripcion + ", horas=" + horas + ", costo de materiales=" + costoMateriales + ", finalizado=" + finalizado + '}';
+    }
 }
 
 /**
@@ -178,8 +239,8 @@ class Mecanica extends Reparacion {
  */
 class ChapaPintura extends Reparacion {
 
-    public ChapaPintura(int plazo) {
-        super(21);
+    public ChapaPintura(String descrip) {
+        super(21,descrip);
     }
 
     @Override
@@ -187,5 +248,8 @@ class ChapaPintura extends Reparacion {
         return this.costoMateriales * 1.3f;
     }
     
-    
+    @Override
+    public String toString() {
+        return "Trabajo{" + "identificador=" + identificador + ", tipo= Reparación de Chapa/Pintura" + ", descripcion=" + descripcion + ", horas=" + horas +  ", costo de materiales=" + costoMateriales + ", finalizado=" + finalizado + '}';
+    }
 }
